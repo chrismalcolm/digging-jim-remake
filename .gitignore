@@ -1,6 +1,10 @@
 build
+build-linux
 out
 .cache
 .idea
 .vs
 .vscode
+vcpkg_installed
+caves/*.cav
+docs/research/

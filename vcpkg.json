@@ -1,0 +1,7 @@
+{
+  "name": "digging-jim",
+  "version-string": "1.0",
+  "dependencies": [
+    "wxwidgets"
+  ]
+}

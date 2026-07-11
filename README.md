@@ -1,132 +1,235 @@
-# Digging Jim
+<h1 align="center">⛏️ Digging Jim</h1>
 
-![Main Menu](/docs/images/main_menu.png)
+<p align="center">
+  <img src="./docs/images/main_menu.png" alt="Digging Jim Main Menu" width="600">
+</p>
 
-This project is a fan-made re-creation of the game Digging Jim, a Boulder Dash�style game originally developed and published by Persei Entertainment in 1999 for Windows.
+<p align="center">
+  <a href="../../releases"><img src="https://img.shields.io/github/v/release/chrismalcolm/digging-jim?style=for-the-badge&label=Download&color=brightgreen" alt="Download"></a>
+  <img src="https://img.shields.io/badge/C%2B%2B-17-blue?style=for-the-badge&logo=cplusplus" alt="C++17">
+  <img src="https://img.shields.io/badge/SFML-3.0-red?style=for-the-badge" alt="SFML 3.0">
+  <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey?style=for-the-badge" alt="Platform">
+</p>
 
-The original game no longer runs well on modern hardware, so this remake was created as a non-commercial tribute. It is not affiliated with or endorsed by Persei Entertainment. Please support the official release where possible.
-
-## Credits
-
-Original Game (1999) by Persei Entertainment
-* Programming: **Peter Pr�st**
-* Graphics: **Robert Kjettrup**
-* Sound: **Henrik Sundberg**, **Peter Pr�st**
-* Cave Design: **Robert Kjettrup**, **Peter Pr�st**, **Anders Hansen**
-
-Remake (2025)
-* Recreation: **Christopher Malcolm**
-
-![Screenshots](/docs/images/screenshots.png)
+<p align="center">
+  A fan-made C++ remake of <strong>Digging Jim</strong> — a Boulder Dash‑style game originally developed by <em>Persei Entertainment</em> in 1999.
+  <br>
+  The original no longer runs well on modern hardware, and was Windows-only. This remake brings Jim back faithfully — and cross-platform to Windows, Linux, and macOS!
+</p>
 
 ---
 
-## Gameplay
+## 🎮 Download & Play
 
-The player will have control of Jim.
+**No build required.** Grab the latest release for your platform from the [**Releases**](../../releases) page, extract the zip, and you're in.
 
-The goal is to collect a certain amount of diamonds in the cave, to unlock and leave through the exit door.
+| Platform | Instructions |
+| :--- | :--- |
+| **Windows** | Run `DiggingJim.exe` directly — no setup needed. |
+| **Linux** | Install runtime libs (see below), then `./DiggingJim` |
+| **macOS** | Install wxWidgets via Homebrew (see below), then `./DiggingJim` |
 
-The amount of diamonds required is called the diamond quota.
+<details>
+<summary><strong>Linux runtime dependencies</strong></summary>
 
-Caves will contain obstacles and enemies in an attempt to thwart Jim's attempt at completing each cave.
-
-There is also a cave timer, which if it gets to 0 seconds, will cause Jim to self-destruct.
-
-There are 100 caves in the original game.
-
-The original game also had a Builder (coming soon) where players could build their own cave files. Some examples of these have been added to this project as well.
-
-![Gameplay](/docs/images/gameplay.png)
-
----
-
-## Controls
-
-Keyboard controls have remained faithful to the original game. The original also supported joystick, so support for controllers and joysticks have been added in as well.
-
-| Keyboard | Controller/Joystick | Action |  Description |
-| - | - | - | - |
-| `Arrow Keys`/`W` `A` `S` `D` | `Analog Stick` | Move/Navigate | Control Jim's movement when traversing the cave environment. You can also move pushable objects such as boulders by holding against it for 1 second. Also used to navigate the Main Menu. |
-| `Enter` | `A` / `Cross` / `Button 0` | Select/Confirm | Select and confirm options in the Main Menu. Also used to restart a cave if Jim is defeated.  |
-| `Space` | `X` / `Square` / `Button 2` | Collect mode | Collect mode allows Jim to dig in an adjacent space without actually moving there. This can be used to collect adjacent diamonds or release enemies without touching them. |
-| `Tab` | `B` / `Circle` / `Button 1` | Self-destruct | Sometimes Jim will become trapped and unable to complete the cave. If that is the case, you can use the self-destruct to restart the cave, before the timer runs out. |
-| `Esc` | `Back` / `Select` / `Button 6` | Quit | Exit the cave and navigate back to the Main Menu. |
-| `P` | `Start` | Pause/Resume | Toggle pausing when playing a cave. |
-
----
-
-## Cheat mode
-
-The original game also had a "cheat" mode. This was activated by pressing the `F12` key. Once in cheat mode, pressing `F1` would let you skip forward caves in the game, and also allowed the player in increment caves by 1 instead of 5 in the Main Menu.
-
-The same functionality is present here, with the cheat activation button being mapped to `F11` instead.
-
-Additional cheat buttons have also been added to the game, which are listed below.
- 
-`F1` � Go to next cave  
-`F2` � Restart current cave  
-`F3` � Go to previous cave  
-`F4` � Open Cave Properties window  
-`F5` � Toggle Editor Panel  
-`F6` � Move camera target left  
-`F7` � Move camera target up  
-`F8` � Move camera target down  
-`F9` � Move camera target right  
-`F10` � Reset camera target to Jim  
-`F11` � Activate cheat mode  
-
-### Cave Properties window
-
-This is the Cave Properties window. It can be used to edit various properties of the cave, such as diamond quota and the colour. These changes will be applied in real-time. If the cave reloads, these properties will be reset back to the original.
-
-![Cave Properties](/docs/images/cave_properties.png)
-
-### Editor Panel
-This is the Editor Panel. Use it to add cave entities into the cave by using the mouse.
-
-![Editor Panel](/docs/images/editor_panel.png)
-
----
-
-## Cave File Format
-
-A cave file is a document containing data for Digging Jim caves. These files have the extension `.cav` and have a particular byte format.
-
-Below is a diagram of this format, each row represents **8 bytes**. Offsets are shown in hex on the left.
-
-```text
-0x00 | C   A   V   E   c0  c1  c2  c3| -- Header
-0x08 | *   *   *   *   *   *   *   * | * First 4 bytes are literally the characters "C", "A", "V", "E"
-0x10 | *   *   *   *   *   *   *   * | * Following 4 bytes (c0-c3) represent the number of caves in the file as a uint32
-0x18 | *   *   *   *   *   *   *   * | * The remaining 80 bytes are all padding
-0x20 | *   *   *   *   *   *   *   * |
-0x28 | *   *   *   *   *   *   *   * |
-0x30 | *   *   *   *   *   *   *   * |
-0x38 | *   *   *   *   *   *   *   * |
-0x40 | *   *   *   *   *   *   *   * |
-0x48 | *   *   *   *   *   *   *   * |
-0x50 | *   *   *   *   *   *   *   * |
-0x58 | w0  w1  h0  h1  p0  p1  p2  p3| -- Payload
-0x60 | t0  t1  t2  t3  q0  q1  q2  q3| * First 4 bytes (w0-w1, h0-h1) represent the dimensions of the cave (width, height) as uint16.
-0x68 | v0  v1  v2  v3  e0  e1  e2  e3|   Defaults of width = 50 and height == 30 are used value is 0 (for the original caves, this was always 0)
-0x70 | a0  a1  a2  a3  m0  m1  m2  m3| * Following 4 bytes (p0-p3) represent the plasma growth speed as a uint32 (1-1000)
-0x78 | M0  M1  M2  M3  H0  H1  H2  H3| * Next 4 bytes (t0-t3) represent the starting cave timer value as a uint32 (0-999)
-0x80 | s0  s1  s2  s3  l0  l1  l2  l3| * Next 4 bytes (q0-q3) represent the diamond quota as a uint32 (0-999)
-0x88 | d   d   d   d   d   d   d   d | * Next 4 bytes (v0-v3) represent the diamond value as a uint32 (0-99)
-0x90 | d   d   d   d   d   d   d   d | * Next 4 bytes (e0-e3) represent the extra diamond value (0-99)
-0x98 | d   d   d   d   d   d   d   d | * Next 4 bytes (a0-a3) represent the amoeba growth speed as a uint32 (1-1000)
-0xA0 | d   d   d   d   d   d   d   d | * Next 4 bytes (m0-m3) represent the amoeba growth max
-0xA8 | d   d   d   d   d   d   d   d | * Next 4 bytes (M0-M3) represent the magic wall expiry time (0-999)
-0xB0 | d   d   d   d   d   d   d   d | * Next 4 bytes (H0-H3) represent the cave colour hue (0-200)
-0xB8 | d   d   d   d   d   d   d   d | * Next 4 bytes (s0-s3) represent the cave colour saturation (0-200)
-0xC0 | d   d   d   d   d   d   d   d | * Next 4 bytes (l0-l3) represent the cave colour luminance (0-200)
-0xC8 | d   d   d   d   d   d   d   d | 
-0xD0 | d   d   d   d   d   d   d   d | * Remaining data for the cave will be the next (width x height) bytes
-0xD8 | d   d   d   d   d   d   d   d |   This is the map grid where each byte represents a cave entity
-0xE0 | d   d   d   d   d   d   d   d | 
-0xE8 | d   d   d   d   d   d   d   d | * Once data for cave end, data for next cave will begin, with the cave properties
-0xF0 | d   d   d   d   d   d   d   d |   This will repeat for each cave until the cave count is exhausted.
-0xF8 | d   d   d   d   d   d   d   d |
-...
+**Ubuntu / Debian (modern):**
+```bash
+sudo apt-get install libopenal1 libflac12t64 libvorbis0a libogg0 libfreetype6 libwxgtk3.2-1t64
+./DiggingJim
 ```
+
+**Ubuntu / Debian (older — if the above packages aren't available):**
+```bash
+sudo apt-get install libopenal1 libflac8 libvorbis0a libogg0 libfreetype6 libwxgtk3.0-gtk3-0v5
+./DiggingJim
+```
+
+**Fedora / RHEL:**
+```bash
+sudo dnf install openal-soft flac-libs libvorbis libogg freetype wxGTK
+./DiggingJim
+```
+
+**Arch:**
+```bash
+sudo pacman -S openal flac libvorbis libogg freetype2 wxwidgets-gtk3
+./DiggingJim
+```
+
+</details>
+
+<details>
+<summary><strong>macOS runtime dependencies</strong></summary>
+
+```bash
+brew install wxwidgets
+./DiggingJim
+```
+
+</details>
+
+---
+
+## 🕹️ Gameplay
+
+<p align="center">
+  <img src="./docs/images/gameplay.png" alt="Gameplay Screenshot" width="600">
+</p>
+
+You are **Jim**. Jim digs. Jim collects diamonds. Jim tries very hard not to get crushed.
+
+Each cave presents a grid of dirt, rocks, enemies, and glittering diamonds. To escape, Jim must collect enough diamonds to meet the **diamond quota** and reach the **exit door** — all before the **cave timer** hits zero. Simple in theory; lethal in practice.
+
+<p align="center">
+  <img src="./docs/images/screenshots.png" alt="Gameplay Screenshots" width="100%">
+</p>
+
+### What stands in Jim's way
+
+| | Entity | Description |
+| :---: | :--- | :--- |
+| ![Dirt](./assets/manual/dirt.gif) | **Dirt** | The most common formation. Jim can dig through it, but it stops everything else except amoeba. |
+| ![Boulder](./assets/manual/rock.gif) | **Boulder** | Falls if unsupported and rolls off unstable surfaces like diamonds, other boulders, and brick walls. Dangerous when falling, but useful for hitting enemies. Jim can push them sideways with a little effort. |
+| ![Diamond](./assets/manual/diamond.gif) | **Diamond** | Jim's goal. Collect enough to meet the quota and unlock the exit. Behaves much like a boulder — watch your head. |
+| ![Fragile Diamond](./assets/manual/fragdiam.gif) | **Fragile Diamond** | As valuable as a normal diamond, but shatters if it falls or is hit by a falling object. |
+| ![Ore](./assets/manual/nut.gif) | **Granite Ore** | Falls like a boulder. Hit it with a boulder and a diamond will appear! |
+| ![Wall](./assets/manual/wall.GIF) | **Wall** | Normal brick wall. Can be destroyed by explosions. Boulders roll off it. |
+| ![Solid Wall](./assets/manual/solid.GIF) | **Solid Wall** | Reinforced wall. Cannot be destroyed in any way. |
+| ![Magic Wall](./assets/manual/magicwal.gif) | **Magic Wall** | Inactive until struck by a boulder or diamond. Once active it converts boulders to diamonds and vice versa, for a cave-specific duration. After it expires it simply dissolves whatever passes through. |
+| ![Expanding Wall](./assets/manual/expand.gif) | **Expanding Wall** | Comes in horizontal and vertical variants. Expands along its axis into free space — sometimes used as a trap, so watch out. |
+| ![Plasma](./assets/manual/plasma.gif) | **Plasma** | Expands randomly in all directions through free space at a cave-specific speed. Often quite fast — be careful when releasing it or you may get trapped. |
+| ![Amoeba](./assets/manual/amoeba.gif) | **Amoeba** | Spreads through dirt and free space at a cave-specific speed. Kills all creatures except Jim. Turns to boulders when it reaches its size limit — but if Jim manages to fully enclose it so it can no longer grow, it transforms into diamonds instead. |
+| ![Protozo](./assets/manual/baddie.gif) | **Protozo** | Common cave critter. Moves through free space, turning left whenever possible. Deadly on contact with Jim. When hit by a falling object it explodes, which is useful for clearing brick walls and obstacles. |
+| ![Cave Gull](./assets/manual/cavegull.gif) | **Cave Gull** | Moves through free space, turning right whenever possible. Hit one with a falling object or let amoeba reach it — its explosion yields 9 diamonds. Still as deadly as a Protozo if it reaches Jim. |
+| ![Eater](./assets/manual/eater.gif) | **Eater** | A two-headed menace. Turns right through free space and will gorge itself on diamonds — get rid of them before they eat your quota. |
+| ![Aggressor](./assets/manual/aggres.gif) | **Aggressor** | Rare but terrifying. Uses acute senses to actively hunt Jim. Not very clever though — complex obstacles can throw them off. |
+| ![Cilia](./assets/manual/yam.gif) | **Cilia** | Moves in straight lines and picks a random direction when it hits an obstacle. |
+| ![TNT](./assets/manual/tnt.gif) | **TNT Box** | Left by long-forgotten miners. Can be pushed like a boulder. When the Detonator is activated, every TNT box in the cave explodes — make sure they're in the right place first. |
+| ![Detonator](./assets/manual/detonate.gif) | **Detonator** | Touch it to trigger every TNT box in the cave simultaneously. |
+| ![Bomb](./assets/manual/bomb.gif) | **Drop Bomb** | Extremely sensitive. Goes off if any object hits it, or if it falls and lands on something. |
+| ![Tubes](./assets/manual/tubes.GIF) | **Tubes** | Bi-directional tubes let Jim pass from either side; one-way tubes only allow entry from one end. Only Jim can move through tubes. |
+| ![Start Door](./assets/manual/entrance.GIF) | **Start Door** | Jim enters the cave through here at the beginning of each level. |
+| ![Exit Door](./assets/manual/exit.GIF) | **Exit Door** | Locked until Jim collects enough diamonds. Reach it to advance to the next cave — don't let it get caught in an explosion. |
+
+### Controls
+
+| Keyboard | Controller / Joystick | Action | Description |
+| :--- | :--- | :--- | :--- |
+| `Arrow Keys` / `W` `A` `S` `D` | `Analog Stick` | Move / Navigate | Move Jim. Hold against a boulder for 1 second to push it. Also navigates the Main Menu. |
+| `Enter` | `A` / `Cross` / `Button 0` | Select / Confirm | Confirm menu selections. Restart cave after death. |
+| `Space` | `X` / `Square` / `Button 2` | Collect Mode | Dig or collect in an adjacent tile without stepping into it. Great for grabbing diamonds safely. |
+| `Tab` | `B` / `Circle` / `Button 1` | Self-Destruct | Instantly restart the cave when Jim is hopelessly trapped. |
+| `Esc` | `Back` / `Select` / `Button 6` | Quit | Return to the Main Menu. |
+| `P` | `Start` | Pause / Resume | Pause the cave. |
+
+---
+
+## ⚡ Features
+
+- **Faithful recreation** of all 100 original Persei Entertainment caves
+- **Cross-platform** — Windows, Linux (x64 & ARM64), and macOS
+- **Controller & joystick support** added alongside original keyboard controls
+- **Cave Editor** — build your own cave files with a full GUI editor (undo/redo; cave properties; test-in-game; developer mode for extended tools)
+- **Original `.cav` file format** — backwards-compatible with cave files from the original 1999 game
+- **Per-cave colour theming** — hue, saturation, and luminance controls per cave
+- **Animated tiles** — amoeba, magic walls, plasma, and more all animate in-game
+- **Sound effects** — original sound design recreated for every entity interaction
+
+---
+
+## 🕵️ Cheat Mode
+
+The original game had a cheat mode activated with `F12`. This remake maps activation to `F11`, and expands the available cheats.
+
+Press `F11` to activate, then:
+
+| Key | Action |
+| :--- | :--- |
+| `F1` | Go to next cave |
+| `F2` | Restart current cave (new) |
+| `F3` | Go to previous cave (new) |
+
+> Cave navigation in the Main Menu also steps by 1 (instead of 5) while cheat mode is active.
+
+---
+
+## 🔧 Cave Editor
+
+<p align="center">
+  <img src="./docs/images/editor.png" alt="Cave Editor" width="600">
+</p>
+
+The editor lets you create and edit `.cav` files — the same format used by the original 1999 game. Features include:
+
+- Place any cave entity using a tile panel
+- **Rectangle fill** — drag to fill a region; middle-click for outline, right-click for solid fill
+- Scroll and zoom the cave view
+- Edit cave properties (timer, diamond quota, amoeba speed, magic wall duration, colour, and more)
+- Test the cave directly in the game from within the editor
+- Save, open, and manage multi-cave `.cav` files
+
+### Developer Mode
+
+Press `Ctrl+D` in the editor to toggle developer mode. This unlocks:
+
+- **Cave resizing** — set cave dimensions freely, from as small as 20×13 up to 255×255 (default is 50×30)
+- **Additional fill modes** — Line fill and Ellipse fill (outline and solid variants)
+
+When testing a cave from the editor with developer mode active, the game also launches in developer mode. This enables additional F-keys on top of the standard cheat mode ones (both cheat mode and developer mode must be active):
+
+| Key | Action |
+| :--- | :--- |
+| `F4` | Open Cave Properties window |
+| `F6` | Move camera target left |
+| `F7` | Move camera target up |
+| `F8` | Move camera target down |
+| `F9` | Move camera target right |
+| `F10` | Reset camera target to Jim |
+
+---
+
+## 🏗️ Building from Source
+
+### Prerequisites
+
+- CMake 3.16+
+- A C++17-capable compiler (MSVC, GCC, Clang)
+- Platform dependencies (see below)
+
+**Windows** — SFML and wxWidgets are pulled via vcpkg automatically during configure.
+
+**Linux:**
+```bash
+sudo apt-get install libxrandr-dev libxcursor-dev libxi-dev libudev-dev \
+  libgl1-mesa-dev libegl1-mesa-dev libopenal-dev \
+  libflac-dev libvorbis-dev libogg-dev libfreetype-dev libwxgtk3.2-dev
+```
+
+**macOS:**
+```bash
+brew install wxwidgets
+```
+
+### Build
+
+```bash
+cmake -B build -DBUILD_SHARED_LIBS=FALSE
+cmake --build build --config Release
+```
+
+Binaries land in `build/bin/`. Copy the `assets/` folder and a `caves/` directory alongside them before running.
+
+---
+
+## 🎖️ Credits
+
+**Original Game (1999) — Persei Entertainment**
+- Programming: **Peter Prøst**
+- Graphics: **Robert Kjettrup**
+- Sound: **Henrik Sundberg**, **Peter Prøst**
+- Cave Design: **Robert Kjettrup**, **Peter Prøst**, **Anders Hansen**
+
+**Remake (2025)**
+- Recreation: **Christopher Malcolm**
+
+> This project is a non-commercial fan tribute. It is not affiliated with or endorsed by Persei Entertainment. Please support the original release where possible.

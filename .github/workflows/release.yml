@@ -1,0 +1,80 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: Build ${{ matrix.platform.name }} ${{ matrix.config.name }}
+    runs-on: ${{ matrix.platform.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+        - { name: Windows, os: windows-2022 }
+        - { name: Linux,   os: ubuntu-24.04 }
+        - { name: macOS, os: macos-latest }
+        config:
+        - { name: Release, flags: -DBUILD_SHARED_LIBS=TRUE }
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install Linux Dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo add-apt-repository universe
+        sudo apt-get update
+        sudo apt-get install -y \
+          libxrandr-dev libxcursor-dev libxi-dev libudev-dev \
+          libgl1-mesa-dev libegl1-mesa-dev libopenal-dev \
+          libflac-dev libvorbis-dev libogg-dev
+        sudo apt-get install -y libfreetype-dev libwxgtk3.2-dev
+
+    - name: Install macOS Dependencies
+      if: runner.os == 'macOS'
+      run: brew install wxwidgets
+
+    - name: Configure
+      run: |
+        EXTRA=""
+        if [ "$RUNNER_OS" = "Windows" ]; then
+          EXTRA="-DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static-md"
+        fi
+        cmake -B build -DCMAKE_BUILD_TYPE=Release ${{ matrix.config.flags }} $EXTRA
+
+    - name: Build
+      run: cmake --build build --config Release --parallel
+
+    - name: Package Game Bundle
+      run: |
+        mkdir -p package
+        cp -r build/bin/* package/ || true
+        cp -r assets package/ || true
+        mkdir -p package/caves
+        touch package/caves/.gitkeep
+        if [ "$RUNNER_OS" = "Windows" ]; then
+          cp build/bin/*.dll package/ || true
+          7z a DiggingJim-${{ matrix.platform.name }}.zip ./package/*
+        else
+          cd package
+          zip -r ../DiggingJim-${{ matrix.platform.name }}.zip .
+        fi
+
+    - name: Upload Release Asset
+      uses: softprops/action-gh-release@v2
+      with:
+        files: DiggingJim-${{ matrix.platform.name }}.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
