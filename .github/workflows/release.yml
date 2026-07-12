@@ -14,7 +14,7 @@ defaults:
 
 jobs:
   build:
-    name: Build ${{ matrix.platform.name }} ${{ matrix.config.name }}
+    name: Build ${{ matrix.platform.name }}
     runs-on: ${{ matrix.platform.os }}
 
     strategy:
@@ -23,9 +23,7 @@ jobs:
         platform:
         - { name: Windows, os: windows-2022 }
         - { name: Linux,   os: ubuntu-24.04 }
-        - { name: macOS, os: macos-latest }
-        config:
-        - { name: Release, flags: -DBUILD_SHARED_LIBS=TRUE }
+        - { name: macOS,   os: macos-latest }
 
     steps:
     - name: Checkout
@@ -52,24 +50,25 @@ jobs:
         if [ "$RUNNER_OS" = "Windows" ]; then
           EXTRA="-DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static-md"
         fi
-        cmake -B build -DCMAKE_BUILD_TYPE=Release ${{ matrix.config.flags }} $EXTRA
+        cmake -B build -DBUILD_SHARED_LIBS=FALSE $EXTRA
 
     - name: Build
       run: cmake --build build --config Release --parallel
 
     - name: Package Game Bundle
       run: |
-        mkdir -p package
-        cp -r build/bin/* package/ || true
-        cp -r assets package/ || true
-        mkdir -p package/caves
-        touch package/caves/.gitkeep
         if [ "$RUNNER_OS" = "Windows" ]; then
-          cp build/bin/*.dll package/ || true
-          7z a DiggingJim-${{ matrix.platform.name }}.zip ./package/*
+          cp -r assets build/bin/Release/
+          mkdir -p build/bin/Release/caves
+          touch build/bin/Release/caves/.gitkeep
+          cd build/bin/Release
+          7z a ../../../DiggingJim-${{ matrix.platform.name }}.zip .
         else
-          cd package
-          zip -r ../DiggingJim-${{ matrix.platform.name }}.zip .
+          cp -r assets build/bin/
+          mkdir -p build/bin/caves
+          touch build/bin/caves/.gitkeep
+          cd build/bin
+          zip -r ../../DiggingJim-${{ matrix.platform.name }}.zip .
         fi
 
     - name: Upload Release Asset
