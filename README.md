@@ -6,6 +6,7 @@
 
 <p align="center">
   <a href="../../releases"><img src="https://img.shields.io/github/v/release/chrismalcolm/digging-jim-remake?style=for-the-badge&label=Download&color=brightgreen" alt="Download"></a>
+  <a href="https://retrospade.itch.io/digging-jim"><img src="https://img.shields.io/badge/itch.io-Play-FA5C5C?style=for-the-badge&logo=itch.io&logoColor=white" alt="itch.io"></a>
   <img src="https://img.shields.io/badge/C%2B%2B-17-blue?style=for-the-badge&logo=cplusplus" alt="C++17">
   <img src="https://img.shields.io/badge/SFML-3.0-red?style=for-the-badge" alt="SFML 3.0">
   <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey?style=for-the-badge" alt="Platform">
